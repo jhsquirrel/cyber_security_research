@@ -1,0 +1,8 @@
+run_xss1.sh
+#uses template/xss1.html
+#use something like burp suite or just a normal browser
+browse to http://0.0.0.0:5000/
+set username to <script>alert</script>
+# this should perform a xss attack and display a javascript alertbox
+# a url redirect can all be performed ...
+set username to <script>window.location.replace("http://www.w3schools.com")</script>

