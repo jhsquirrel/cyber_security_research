@@ -1,0 +1,12 @@
+this is for demo purposes only! only use this on your local network.
+this is to demo how to detect such an exfil method so that you can setup your dlp systems to prevent this!
+
+the scaping.py is a scapy ping util which will send a payload to pingserver.py
+this is to demonstrate how icmp cana be used to exfil data through a firewall
+you can see the data on the wire using
+tshark -xV -i lo
+
+start 3 tabs
+in the first, run tshark
+in the second, run python pngserver.py
+in the third, run scaping.py
