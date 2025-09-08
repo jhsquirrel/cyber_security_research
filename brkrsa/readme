@@ -1,0 +1,22 @@
+# run the following to generate a 40 bit key
+GODEBUG=rsa1024min=0 ./genKey test 40
+# the above command will output the primes used (p & q) along with d
+# e.g.
+*rsa.PrivateKey
+privateKey D=10128627761
+privateKey Primes=942569 925423
+
+
+# run the following command on the public key to generate the private key
+./brkrsa test_public.pem
+# this will output the primes p & q along with e and calculate d
+# e.g.
+*rsa.PublicKey
+&{878268070891 65537}
+N=878268070891 E=65537
+factor1
+factor845657
+factor1038563
+p=845657
+q=1038563
+d=13307266481
