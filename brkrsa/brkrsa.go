@@ -20,18 +20,13 @@ func findFactors(factorsnum *big.Int) []*big.Int{
   a := big.NewInt(int64(10000000))
   pc := 0
   var primes []*big.Int
-  //for i := 1; i <= factorsnum; i++ {
   for {
     if i.Cmp(c) > 0 {
       fmt.Println("i=" + i.String() + " factorsnum " + factorsnum.String())
       c = new(big.Int).Add(c, a)
     }
-    //fmt.Println(factorsnum.String())
     if i.Cmp(factorsnum) < 0 || i.Cmp(factorsnum) == 0 {
-      //if factorsnum % i == 0 {
       m := new(big.Int).Mod(factorsnum, i)
-      //fmt.Println("mod" + m.String())
-      //if new(big.Int).Mod(factorsnum, i) == zero {
       if m.Cmp(zero) == 0 {
         primes = append(primes, i)
         fmt.Println("factor" + i.String())
@@ -39,16 +34,11 @@ func findFactors(factorsnum *big.Int) []*big.Int{
       }
       if pc >= 3 {
         // we have found p & q, exit
-        //fmt.Println("p=" + primes[1].String())
-        //fmt.Println("q=" + primes[2].String())
-        //var d = e.modInverse(p_1.multiply(q_1))
-        //break
         return primes
       }
       i = new(big.Int).Add(i, one)
     } else {
       fmt.Println("break")   
-      //break
       return primes
     }
   }
