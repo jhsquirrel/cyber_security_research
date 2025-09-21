@@ -66,6 +66,8 @@ func main() {
     fmt.Println("N=" + N.String() + " E=" + strconv.Itoa(E))
     var primes = findFactors(N)
     one := big.NewInt(int64(1))
+    var p_ = primes[1]
+    var q_ = primes[2]
     var p = new(big.Int).Sub(primes[1], one)
     var q = new(big.Int).Sub(primes[2], one)
     fmt.Println("p=" + primes[1].String())
@@ -74,4 +76,30 @@ func main() {
     var e = big.NewInt(int64(E))
     var d = new(big.Int).ModInverse(e, pq)
     fmt.Println("d=" + d.String())
+
+    // generate a new private key from the values calculated
+    PrivPrimes := []*big.Int{p, q}
+    var dQ = new(big.Int).ModInverse(e, q)
+    var dP = new(big.Int).ModInverse(e, p)
+    var invQ = new(big.Int).ModInverse(q_, p_)
+
+    fmt.Println("dQ=" + dQ.String())
+    fmt.Println("dP=" + dP.String())
+    fmt.Println("invQ=" + invQ.String())
+
+    var crt []rsa.CRTValue
+    var pc = rsa.PrecomputedValues{Dp: dP, Dq: dQ, Qinv: invQ, CRTValues: crt}
+    privKey := rsa.PrivateKey{PublicKey: *pk, D: d, Primes: PrivPrimes, Precomputed: pc}
+    fmt.Println(privKey)
+
+    privateKeyBytes := x509.MarshalPKCS1PrivateKey(&privKey)
+    privateKeyPEM := pem.EncodeToMemory(&pem.Block{
+        Type:  "RSA PRIVATE KEY",
+        Bytes: privateKeyBytes,
+    })
+    err = os.WriteFile(pubkeyfile + ".generatedPrivateKey", privateKeyPEM, 0644)
+    if err != nil {
+        panic(err)
+    }
+    
 }
