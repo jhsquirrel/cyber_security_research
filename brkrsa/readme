@@ -20,3 +20,11 @@ factor1038563
 p=845657
 q=1038563
 d=13307266481
+
+a new private key, generated from the public key will be saved
+with the extension .generatedPrivateKey
+
+the private keys can be checked with something like
+openssl rsa -in test_private.pem -check -text
+and
+openssl rsa -in test_public.pem.generatedPrivateKey -check -text
