@@ -32,8 +32,13 @@ func main() {
     Primes := privateKey.Primes
     fmt.Println(reflect.TypeOf(privateKey))
     fmt.Println("privateKey D=" + D.String())
-    fmt.Println("privateKey Primes=" + Primes[0].String() + " " + Primes[1].String())
-
+    fmt.Println("privateKey Primes (p,q)=" + Primes[0].String() + " " + Primes[1].String())
+    precomp := privateKey.Precomputed
+    fmt.Println("privateKey.Dp=" + precomp.Dp.String())
+    fmt.Println("privateKey.Dq=" + precomp.Dq.String())
+    fmt.Println("privateKey.Qinv=" + precomp.Qinv.String())
+    fmt.Println(privateKey)
+    
     privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
     privateKeyPEM := pem.EncodeToMemory(&pem.Block{
         Type:  "RSA PRIVATE KEY",
