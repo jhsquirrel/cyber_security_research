@@ -1,0 +1,4 @@
+a basic script to create files that contain image headers
+this can be usefull if a web app only accepts image files (for example)
+but you want to upload wome php in order to capture a flag
+with this script you can create a header file and prepend in to you php script

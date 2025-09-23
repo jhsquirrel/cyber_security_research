@@ -38,7 +38,7 @@ func main() {
     fmt.Println("privateKey.Dq=" + precomp.Dq.String())
     fmt.Println("privateKey.Qinv=" + precomp.Qinv.String())
     fmt.Println(privateKey)
-    
+
     privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
     privateKeyPEM := pem.EncodeToMemory(&pem.Block{
         Type:  "RSA PRIVATE KEY",
