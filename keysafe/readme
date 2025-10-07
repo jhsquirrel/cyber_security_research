@@ -1,0 +1,6 @@
+build using go
+go build .
+
+this is a basic keysafe that will take a username (-user) for a site, the sitename (-site)
+and either -pass (to ask for and save a pass in the keysafe) or -get (to return the already stored pass)
+
