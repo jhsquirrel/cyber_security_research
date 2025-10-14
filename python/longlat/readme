@@ -1,0 +1,4 @@
+longlat.py takes a single argument (a file containing the gps longitude and latitude to convert)
+it will output to the console, a string that is readable for google maps
+
+e.g. python3 longlat.py image_gps
