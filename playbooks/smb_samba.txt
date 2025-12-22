@@ -1,0 +1,16 @@
+summary:
+smb / samba is often accessible without credentials
+
+commands:
+# enumerate with
+nmap -p 445 --script=smb-enum-shares.nse,smb-enum-users.nse <ip address>
+nmap -p 139 --script=smb-enum-shares.nse,smb-enum-users.nse <ip address>
+enum4linux <ip address>
+
+# login
+smbclient //<ip address>/anonymous
+# login without asking for password
+smbclient -N //<ip address>/anonymous
+
+# get data recursively
+smbget -R smb://<ip address>/anonymous

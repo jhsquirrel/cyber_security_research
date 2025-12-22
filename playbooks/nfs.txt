@@ -1,0 +1,17 @@
+summary:
+nfs is often exported without credentials required, running on ports 111 and 2049
+
+commands:
+# in order to show nfs exported mounts
+showmount -e <ip address>
+
+# in order to mount an exported nfs filesystem
+# first make a local directory
+mkdir my_tmp_dir
+# then mount the nfs filesystem
+mount <ip address>:</nfsfilesystem/path> my_tmp_dir
+# once done with the filesystem, it can be umounted
+umount my_tmp_dir
+
+
+

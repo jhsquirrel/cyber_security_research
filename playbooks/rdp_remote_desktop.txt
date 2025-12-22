@@ -1,0 +1,7 @@
+summary:
+If rdp (remote desktop) is available, it can be accessed via port 3389
+
+commands:
+xfreerdp3 /u:<username> /p:<"password"> /v:<ip address> /w:1024 /h:640
+# you may need to play around with /w (width) and /h (height) to find the best
+# option for your current screen

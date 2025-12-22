@@ -1,0 +1,5 @@
+summary:
+often, ftp (typicall running on port 21) can be accessed without credentials
+
+commands:
+ftp anonymous@<ip address>
