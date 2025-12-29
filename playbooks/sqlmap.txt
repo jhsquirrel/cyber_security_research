@@ -1,0 +1,9 @@
+summary:
+If a webapp takes user inputs, it will often have a database on the backend.
+This database may poorly configured, or, the webapp may not properly sanitize inputs.
+This lack of input sanitization can lead to sql injection (sqli) vulnerabilities.
+These can be detected and exploited by sqlmap.
+
+commands:
+# dump contents of databases via forms, accept all defaults when sqlmap asks.
+sqlmap -u http://<ip address> --forms --dump

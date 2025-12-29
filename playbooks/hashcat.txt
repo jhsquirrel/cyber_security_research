@@ -1,0 +1,9 @@
+summary:
+Hashcat allows a obtained credential hash to be brute forced via a wordlist
+
+commands:
+hashcat <file containing hash> <wordlist e.g. rockyou.txt>
+# hashcat may complain if it cannot figure out the hash type, it will give you some options
+# to try. The hash type can be selected with the -m switch, e.g.
+hashcat -m 0 <file containing hash> /usr/share/wordlists/rockyou.txt
+# the above sets the hashtype to md5
